@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  httpd:
+    image: httpd:latest
+    container_name: knote-httpd
+    volumes:
+      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - node
+
+  node:
+    build: ./node
+    container_name: knote-node
+    volumes:
+      - ./node:/usr/src/app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/knote
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: knote-mongo
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: knote-jenkins
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+
+volumes:
+  mongo-data:
+  jenkins-data:
