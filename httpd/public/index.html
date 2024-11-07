@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNote App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to KNote App</h1>
+    <p>A simple note-taking application.</p>
+    <form id="note-form">
+        <input type="text" id="title" placeholder="Title" required><br><br>
+        <textarea id="content" placeholder="Content" required></textarea><br><br>
+        <button type="submit">Add Note</button>
+    </form>
+    <div id="notes"></div>
+    <script>
+        document.getElementById("note-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+            const response = await fetch("http://localhost:8080/notes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content })
+            });
+            if (response.ok) {
+                alert("Note added!");
+                document.getElementById("note-form").reset();
+            } else {
+                alert("Error adding note.");
+            }
+        });
+    </script>
+</body>
+</html>
